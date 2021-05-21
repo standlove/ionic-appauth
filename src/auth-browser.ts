@@ -1,7 +1,7 @@
 export abstract class Browser {
     protected onCloseFunction : Function = () => {};
 
-    abstract showWindow(url : string, callbackUrl?: string) : string | undefined | Promise<string | undefined>;
+    abstract showWindow(url : string, callbackUrl?: string, authConfig?: any) : string | undefined | Promise<string | undefined>;
     abstract closeWindow(): void | Promise<void>;
 
     browserCloseListener(closeBrowserEvent : Function){

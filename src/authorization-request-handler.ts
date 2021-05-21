@@ -14,6 +14,7 @@ import {
 } from "@openid/appauth";
 
 import { Browser } from "./auth-browser";
+import { IAuthConfig } from "./auth-configuration";
 
 /** key for authorization request. */
 const authorizationRequestKey =
@@ -36,12 +37,12 @@ export class IonicAuthorizationRequestHandler extends AuthorizationRequestHandle
         super(utils, generateRandom);
     }
 
-    public async performAuthorizationRequest(configuration: AuthorizationServiceConfiguration, request: AuthorizationRequest) : Promise<void> {
+    public async performAuthorizationRequest(configuration: AuthorizationServiceConfiguration, request: AuthorizationRequest, authConfig?: IAuthConfig) : Promise<void> {
         let handle = this.generateRandom.generateRandom(10);
         this.storage.setItem(AUTHORIZATION_REQUEST_HANDLE_KEY, handle);
         this.storage.setItem(authorizationRequestKey(handle), JSON.stringify(await request.toJson()));
         let url = this.buildRequestUrl(configuration, request);
-        let returnedUrl : string | undefined = await this.browser.showWindow(url, request.redirectUri); 
+        let returnedUrl : string | undefined = await this.browser.showWindow(url, request.redirectUri, authConfig); 
 
         //callback may come from showWindow or via another method
         if(returnedUrl != undefined){
