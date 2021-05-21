@@ -55,7 +55,7 @@ export class CordovaBrowser extends Browser {
             this.inAppBrowserRef = InAppBrowser.create(url, '_blank', authConfig.inAppBrowser);
             if (this.inAppBrowserRef !== undefined) {
                 this.inAppBrowserRef.on('loadstart').subscribe(e => {
-                    if (e.url.includes(authConfig.redirect_url)) {
+                    if (e.url.includes(authConfig.redirect_url) || e.url.includes(authConfig.end_session_redirect_url)) {
                         this.inAppBrowserRef.close();
                         InAppBrowser.create(e.url.replace('http://', ''), '_system');
                     }
