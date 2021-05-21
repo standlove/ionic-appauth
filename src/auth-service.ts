@@ -36,8 +36,8 @@ export class AuthService implements IAuthService {
 
     protected tokenHandler: TokenRequestHandler;
     protected userInfoHandler: UserInfoHandler;
-    protected requestHandler : AuthorizationRequestHandler;
-    protected endSessionHandler : EndSessionHandler;
+    protected requestHandler : AuthorizationRequestHandler | any;
+    protected endSessionHandler : EndSessionHandler | any;
     
     constructor(
         protected browser : Browser = new DefaultBrowser(),
@@ -129,12 +129,12 @@ export class AuthService implements IAuthService {
             }
     
             let request : EndSessionRequest = new EndSessionRequest(requestJson);
-            let returnedUrl : string | undefined = await this.endSessionHandler.performEndSessionRequest(await this.configuration, request);
+            await this.endSessionHandler.performEndSessionRequest(await this.configuration, request, this.authConfig);
 
             //callback may come from showWindow or via another method
-            if(returnedUrl != undefined){
+            // if(returnedUrl != undefined){
                 this.endSessionCallback();
-            }
+            // }
         }else{
             //if user has no token they should not be logged in in the first place
             this.endSessionCallback();
@@ -156,7 +156,7 @@ export class AuthService implements IAuthService {
         if(this.authConfig.pkce)
             await request.setupCodeVerifier();
 
-        return this.requestHandler.performAuthorizationRequest(await this.configuration, request);       
+        return this.requestHandler.performAuthorizationRequest(await this.configuration, request, this.authConfig);       
     }
 
     protected async requestAccessToken(code : string, codeVerifier?: string) : Promise<void> {

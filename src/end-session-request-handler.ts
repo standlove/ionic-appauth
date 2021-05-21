@@ -1,9 +1,10 @@
 import { EndSessionRequest } from './end-session-request';
 import { AuthorizationServiceConfiguration, StringMap, BasicQueryStringUtils } from "@openid/appauth";
 import { Browser } from './auth-browser'
+import { IAuthConfig } from './auth-configuration';
 
 export interface EndSessionHandler {
-  performEndSessionRequest(configuration: AuthorizationServiceConfiguration, request : EndSessionRequest): Promise<string | undefined>;
+  performEndSessionRequest(configuration: AuthorizationServiceConfiguration, request : EndSessionRequest, authConfig?: IAuthConfig): Promise<string | undefined>;
 }
 
 export class IonicEndSessionHandler implements EndSessionHandler {
@@ -13,9 +14,9 @@ export class IonicEndSessionHandler implements EndSessionHandler {
         private utils = new BasicQueryStringUtils()  
         ) {}
 
-    public async performEndSessionRequest(configuration: AuthorizationServiceConfiguration, request : EndSessionRequest): Promise<string | undefined> {
+    public async performEndSessionRequest(configuration: AuthorizationServiceConfiguration, request : EndSessionRequest, authConfig?: IAuthConfig): Promise<string | undefined> {
       let url = this.buildRequestUrl(configuration, request);
-      return this.browser.showWindow(url, request.postLogoutRedirectURI); 
+      return this.browser.showWindow(url, request.postLogoutRedirectURI, authConfig); 
     }
 
     private buildRequestUrl(configuration: AuthorizationServiceConfiguration,request: EndSessionRequest) {
